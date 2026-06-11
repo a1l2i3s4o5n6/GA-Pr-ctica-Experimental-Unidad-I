@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Explorador de países del mundo usando RestCountries API" />
+  <meta name="theme-color" content="#1a237e" />
+  <link rel="manifest" href="manifest.json" />
+  <title>Explorador de Países</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body>
+<a href="#paises" class="skip-link">Saltar al contenido principal</a>
+<header class="site-header">
+  <div class="container">
+    <h1 class="logo">Explorador de Países</h1>
+    <nav class="nav" aria-label="Navegación principal">
+      <a href="#inicio">Inicio</a>
+      <a href="#paises">Países</a>
+      <a href="#registro">Registro</a>
+      <a href="#acerca">Acerca</a>
+    </nav>
+    <button id="btn-modo-oscuro" class="btn-modo-oscuro" aria-label="Alternar modo oscuro">🌙</button>
+  </div>
+</header>
+<section id="inicio" class="hero" aria-labelledby="hero-titulo">
+  <div class="container">
+    <h2 id="hero-titulo">Descubre el mundo</h2>
+    <p>Explora información de más de 250 países: población, capital, región y bandera.</p>
+    <div class="controles">
+      <input
+        type="search"
+        id="buscador"
+        class="buscador"
+        placeholder="Buscar país..."
+        aria-label="Buscar país"
+      />
+      <select id="filtro-region" class="filtro" aria-label="Filtrar por región">
+        <option value="">Todas las regiones</option>
+        <option value="Africa">África</option>
+        <option value="Americas">América</option>
+        <option value="Asia">Asia</option>
+        <option value="Europe">Europa</option>
+        <option value="Oceania">Oceanía</option>
+      </select>
+    </div>
+  </div>
+</section>
+
+<main id="paises" aria-label="Lista de países">
+  <div class="container contenido-principal">
+    <div class="col-principal">
+      <p class="contador" id="contador" aria-live="polite"></p>
+      <div id="loading" class="loading" aria-live="polite" role="status">
+        <div class="spinner" aria-hidden="true"></div>
+        <p>Cargando países...</p>
+      </div>
+      <div id="error" class="error oculto" role="alert">
+        <p>No se pudo cargar la información. Intenta de nuevo.</p>
+        <button id="btn-reintentar" class="btn-reintentar">Reintentar</button>
+      </div>
+      <section class="grid-paises" id="grid-paises" aria-label="Tarjetas de países">
+      </section>
+    </div>
+    <aside class="col-aside" aria-label="Países favoritos">
+      <h3>Mis favoritos</h3>
+      <ul id="lista-favoritos">
+        <li>No tienes favoritos aún.</li>
+      </ul>
+    </aside>
+  </div>
+</main>
+
+<section id="registro" class="seccion-formulario" aria-labelledby="form-titulo">
+  <div class="container">
+    <h2 id="form-titulo">Registro de Usuario</h2>
+    <p class="form-subtitulo">Crea tu cuenta para guardar tus países favoritos</p>
+    <form id="form-registro" class="formulario" novalidate>
+
+      <div class="form-fila">
+        <div class="form-grupo">
+          <label for="nombre">Nombre completo</label>
+          <input
+            type="text"
+            id="nombre"
+            name="nombre"
+            placeholder="Ej: Juan Pérez"
+            required
+            minlength="3"
+            maxlength="60"
+            pattern="[A-Za-záéíóúÁÉÍÓÚñÑ\s]+"
+            aria-describedby="nombre-error"
+            autocomplete="name"
+          />
+          <span class="campo-error" id="nombre-error" role="alert">Solo letras y espacios, mínimo 3 caracteres.</span>
+        </div>
+        <div class="form-grupo">
+          <label for="email">Correo electrónico</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="usuario@correo.com"
+            required
+            aria-describedby="email-error"
+            autocomplete="email"
+          />
+          <span class="campo-error" id="email-error" role="alert">Ingresa un correo electrónico válido.</span>
+        </div>
+      </div>
+
+      <div class="form-fila">
+        <div class="form-grupo">
+          <label for="password">Contraseña</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Mínimo 8 caracteres"
+            required
+            minlength="8"
+            pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+            aria-describedby="password-error"
+            autocomplete="new-password"
+          />
+          <span class="campo-error" id="password-error" role="alert">Mínimo 8 caracteres, una mayúscula y un número.</span>
+        </div>
+        <div class="form-grupo">
+          <label for="telefono">Teléfono</label>
+          <input
+            type="tel"
+            id="telefono"
+            name="telefono"
+            placeholder="0991234567"
+            pattern="[0-9]{7,15}"
+            aria-describedby="telefono-error"
+            autocomplete="tel"
+          />
+          <span class="campo-error" id="telefono-error" role="alert">Solo números, entre 7 y 15 dígitos.</span>
+        </div>
+      </div>
+
+      <div class="form-fila">
+        <div class="form-grupo">
+          <label for="edad">Edad</label>
+          <input
+            type="number"
+            id="edad"
+            name="edad"
+            placeholder="18"
+            min="18"
+            max="99"
+            required
+            aria-describedby="edad-error"
+          />
+          <span class="campo-error" id="edad-error" role="alert">Debes tener entre 18 y 99 años.</span>
+        </div>
+        <div class="form-grupo">
+          <label for="fecha-nacimiento">Fecha de nacimiento</label>
+          <input
+            type="date"
+            id="fecha-nacimiento"
+            name="fecha_nacimiento"
+            required
+            aria-describedby="fecha-error"
+          />
+          <span class="campo-error" id="fecha-error" role="alert">Selecciona tu fecha de nacimiento.</span>
+        </div>
+      </div>
+
+      <div class="form-fila">
+        <div class="form-grupo">
+          <label for="num-favoritos">Países favoritos a mostrar: <strong id="valor-range">5</strong></label>
+          <input
+            type="range"
+            id="num-favoritos"
+            name="num_favoritos"
+            min="1"
+            max="20"
+            value="5"
+            aria-describedby="range-desc"
+          />
+          <span class="campo-ayuda" id="range-desc">Selecciona cuántos países favoritos quieres ver (1–20).</span>
+        </div>
+        <div class="form-grupo">
+          <label for="foto-perfil">Foto de perfil</label>
+          <input
+            type="file"
+            id="foto-perfil"
+            name="foto_perfil"
+            accept="image/png, image/jpeg, image/webp"
+            aria-describedby="foto-ayuda"
+          />
+          <span class="campo-ayuda" id="foto-ayuda">Formatos aceptados: PNG, JPG, WEBP.</span>
+        </div>
+      </div>
+
+      <div class="form-grupo">
+        <fieldset class="fieldset-radio">
+          <legend>Género</legend>
+          <div class="radio-grupo">
+            <label class="radio-label">
+              <input type="radio" name="genero" value="masculino" required />
+              Masculino
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="genero" value="femenino" />
+              Femenino
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="genero" value="otro" />
+              Prefiero no decir
+            </label>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="form-grupo">
+        <fieldset class="fieldset-check">
+          <legend>Intereses geográficos</legend>
+          <div class="check-grupo">
+            <label class="check-label">
+              <input type="checkbox" name="intereses" value="cultura" />
+              Cultura
+            </label>
+            <label class="check-label">
+              <input type="checkbox" name="intereses" value="gastronomia" />
+              Gastronomía
+            </label>
+            <label class="check-label">
+              <input type="checkbox" name="intereses" value="historia" />
+              Historia
+            </label>
+            <label class="check-label">
+              <input type="checkbox" name="intereses" value="naturaleza" />
+              Naturaleza
+            </label>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="form-grupo">
+        <label for="region-preferida">Región preferida</label>
+        <select
+          id="region-preferida"
+          name="region_preferida"
+          required
+          aria-describedby="region-error"
+        >
+          <option value="">-- Selecciona una región --</option>
+          <option value="Africa">África</option>
+          <option value="Americas">América</option>
+          <option value="Asia">Asia</option>
+          <option value="Europe">Europa</option>
+          <option value="Oceania">Oceanía</option>
+        </select>
+        <span class="campo-error" id="region-error" role="alert">Selecciona tu región preferida.</span>
+      </div>
+
+      <div class="form-grupo">
+        <label for="biografia">Biografía / Comentarios</label>
+        <textarea
+          id="biografia"
+          name="biografia"
+          rows="4"
+          placeholder="Cuéntanos sobre ti y tus intereses geográficos..."
+          maxlength="500"
+          aria-describedby="bio-ayuda"
+        ></textarea>
+        <span class="campo-ayuda" id="bio-ayuda">Máximo 500 caracteres.</span>
+      </div>
+
+      <div class="form-grupo form-terminos">
+        <label class="check-label">
+          <input
+            type="checkbox"
+            id="terminos"
+            name="terminos"
+            required
+            aria-describedby="terminos-error"
+          />
+          Acepto los <a href="#acerca">términos y condiciones</a>
+        </label>
+        <span class="campo-error" id="terminos-error" role="alert">Debes aceptar los términos para continuar.</span>
+      </div>
+
+      <div class="form-botones">
+        <button type="reset" class="btn-secundario">Limpiar</button>
+        <button type="submit" class="btn-primario">Registrarse</button>
+      </div>
+
+      <div id="form-exito" class="form-exito oculto" role="status" aria-live="polite">
+        ¡Registro exitoso! Bienvenido/a al Explorador de Países.
+      </div>
+
+    </form>
+  </div>
+</section>
+
+<footer id="acerca" class="site-footer">
+  <div class="container">
+    <article class="footer-info">
+      <h3>Sobre este proyecto</h3>
+      <p>Datos obtenidos de <a href="https://restcountries.com" target="_blank" rel="noopener">RestCountries API</a></p>
+      <p class="footer-copy">© 2025 Explorador de Países — Tarea App Web</p>
+    </article>
+  </div>
+</footer>
+
+<script type="module" src="js/app.js"></script>
+
+</body>
+</html>
